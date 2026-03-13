@@ -1,0 +1,44 @@
+services:
+
+  derebit_fastapi:
+    build: .
+    image: derebit_fastapi
+    container_name: derebit_fastapi
+    restart: always
+    links:
+      - "postgres_derebit:dbps"
+    networks:
+      - dbnet
+    volumes:
+      - ./app:/app/app
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Europe/Minsk
+    depends_on:
+      - postgres_derebit
+
+
+  postgres_derebit:
+    image: postgres:17-alpine
+    container_name: psgr_derebit
+    volumes:
+      - postgres-data_derebit:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - TZ=Europe/Minsk
+    networks:
+      - dbnet
+
+
+networks:
+  dbnet:
+    driver: bridge
+
+
+volumes:
+  postgres-data_derebit:
