@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     BROKER_PORT: int = 6379
     BROKER_HOST: str
 
+    TICKERS: tuple = ("btc_usd", "eth_usd")
+
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "../" ".env")
@@ -30,6 +32,7 @@ class Settings(BaseSettings):
     @property
     def broker_url(self) -> str:
         return f"redis://{self.BROKER_HOST}:{self.BROKER_PORT}/0"
+
 
 
 settings = Settings()

@@ -3,9 +3,11 @@ from typing import List, Literal, Annotated
 from fastapi import Depends
 from pydantic import BaseModel, Field
 
+from app.config import settings
+
 
 class TickerQuery(BaseModel):
-    ticker: Literal["btc_usd", "eth_usd"] = Field(..., description="Тикер валютной пары")
+    ticker: Literal[settings.TICKERS] = Field(..., description="Тикер валютной пары")
 
 TickerDep = Annotated[TickerQuery, Depends(TickerQuery)]
 

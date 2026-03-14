@@ -10,6 +10,4 @@ RUN uv sync --frozen --no-dev
 
 COPY . /app
 
-EXPOSE 8000
-
 CMD uv run python -m app.main
