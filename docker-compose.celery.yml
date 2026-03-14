@@ -1,0 +1,31 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    networks:
+      - dbnet
+
+  celery-worker:
+    build: .
+    command: uv run celery -A app.tasks.celery_app worker --pool=prefork -c 4 --loglevel=info
+    networks:
+      - dbnet
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: uv run celery -A app.tasks.celery_app beat --loglevel=info
+    networks:
+      - dbnet
+    depends_on:
+      - redis
+    volumes:
+      - ./app:/app/app
+
+
+networks:
+  dbnet:
+    external: true
+    name: derebit_dbnet

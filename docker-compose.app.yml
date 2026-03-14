@@ -1,5 +1,4 @@
 services:
-
   postgres_derebit:
     image: postgres:17-alpine
     container_name: psgr_derebit
@@ -14,15 +13,6 @@ services:
       - TZ=Europe/Minsk
     networks:
       - dbnet
-
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6380:6379"
-    networks:
-      - dbnet
-
 
   derebit_fastapi:
     build: .
@@ -41,31 +31,10 @@ services:
       - postgres_derebit
 
 
-  celery-worker:
-    build: .
-    command: uv run celery -A app.tasks.celery_app worker --pool=prefork -c 4 --loglevel=info
-    networks:
-      - dbnet
-    depends_on:
-      - postgres_derebit
-      - redis
-
-
-  celery-beat:
-    build: .
-    command: uv run celery -A app.tasks.celery_app beat --loglevel=info
-    networks:
-      - dbnet
-    depends_on:
-      - postgres_derebit
-      - redis
-    volumes:
-      - ./app:/app/app
-
-
 networks:
   dbnet:
     driver: bridge
+    name: derebit_dbnet
 
 
 volumes:
