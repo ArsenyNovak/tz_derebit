@@ -9,7 +9,7 @@ from app.scheme.utils import TickerPaginationDep, TickerDatePaginationDep, Ticke
 router = APIRouter(prefix='/prices', tags=['Работа с ценой'])
 
 
-@router.get("/list")
+@router.get('/list', summary='Получить весь список цен')
 async def get_list_prices(query: TickerPaginationDep, session: SessionDep):
     """Список цен по тикеру"""
     ticker = query.ticker
@@ -37,7 +37,7 @@ async def get_list_prices(query: TickerPaginationDep, session: SessionDep):
     )
 
 
-@router.get("/latest")
+@router.get('/latest', summary='Получить последнюю цену')
 async def get_latest_price(session: SessionDep, query: TickerDep):
     """Последняя цена"""
     ticker = query.ticker
@@ -50,23 +50,23 @@ async def get_latest_price(session: SessionDep, query: TickerDep):
     latest = result.scalars().first()
 
     if not latest:
-        raise HTTPException(404, "Нет данных")
+        raise HTTPException(404, 'Нет данных')
 
     return {
-        "ticker": latest.ticker,
-        "price": round(latest.price, 2),
-        "timestamp": latest.timestamp,
+        'ticker': latest.ticker,
+        'price': round(latest.price, 2),
+        'timestamp': latest.timestamp,
     }
 
 
-@router.get("/list_by_date")
+@router.get('/list_by_date', summary='Получить список цен за период дат')
 async def get_prices_by_date(session: SessionDep, query: TickerDatePaginationDep) -> PriceListResponse:
     """Получить цены по тикеру за период дат"""
     ticker = query.ticker
     from_timestamp = query.from_timestamp
     to_timestamp = query.to_timestamp
     if from_timestamp >= to_timestamp:
-        raise HTTPException(400, "from_timestamp должен быть меньше to_timestamp")
+        raise HTTPException(400, 'from_timestamp должен быть меньше to_timestamp')
 
     # Подсчет общего количества за период
     count_stmt = (

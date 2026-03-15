@@ -31,20 +31,20 @@ class DeribitHTTPXClient:
         self.client = httpx.Client(
             timeout=httpx.Timeout(10.0),
             limits=httpx.Limits(max_keepalive_connections=5, max_connections=10),
-            headers={"User-Agent": "CryptoClient/1.0"}
+            headers={'User-Agent': 'CryptoClient/1.0'}
         )
 
     def get_index_price(self, ticker: str):
         """Синхронный httpx запрос"""
-        url = f"{self.base_url}/api/v2/public/get_index_price"
-        response = self.client.get(url, params={"index_name": ticker})
+        url = f'{self.base_url}/api/v2/public/get_index_price'
+        response = self.client.get(url, params={'index_name': ticker})
         response.raise_for_status()  # Аналог requests
 
         data = response.json()
         return {
-            "ticker": ticker,
-            "price": float(data["result"]["index_price"]),
-            "timestamp": data["usIn"]
+            'ticker': ticker,
+            'price': float(data['result']['index_price']),
+            'timestamp': data['usIn']
         }
 
 
@@ -66,14 +66,14 @@ def fetch_deribit_prices(self):
             try:
                 price_data = client.get_index_price(ticker)
                 results.append(price_data)
-                logger.info(f"✅ {ticker}: ${price_data['price']:.2f}")
+                logger.info(f'✅ {ticker}: ${price_data['price']:.2f}')
             except httpx.TimeoutException:
-                logger.warning(f"⏰ Timeout {ticker}, retry...")
+                logger.warning(f'⏰ Timeout {ticker}, retry...')
                 raise
             except httpx.HTTPStatusError as e:
-                logger.error(f"❌ HTTP {e.response.status_code} {ticker}")
+                logger.error(f'❌ HTTP {e.response.status_code} {ticker}')
             except Exception as e:
-                logger.error(f"❌ {ticker}: {e}")
+                logger.error(f'❌ {ticker}: {e}')
 
         # Синхронное сохранение (psycopg2)
         with sync_session_maker() as session:
@@ -81,9 +81,9 @@ def fetch_deribit_prices(self):
                 session.add(PriceRecord(**result))
             session.commit()
 
-        logger.info(f"💾 Сохранено {len(results)} записей")
-        return {"status": "success", "count": len(results)}
+        logger.info(f'💾 Сохранено {len(results)} записей')
+        return {'status': 'success', 'count': len(results)}
 
     except Exception as exc:
-        logger.error(f"💥 Критическая ошибка: {exc}")
+        logger.error(f'💥 Критическая ошибка: {exc}')
         raise self.retry(countdown=300)

@@ -5,7 +5,7 @@ from app.database import Base
 
 
 class PriceRecord(Base):
-    __tablename__ = "price_records"
+    __tablename__ = 'price_records'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     ticker: Mapped[str] = mapped_column(String, nullable=False)

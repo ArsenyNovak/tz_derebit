@@ -7,7 +7,7 @@ from app.config import settings
 
 
 class TickerQuery(BaseModel):
-    ticker: Literal[settings.TICKERS] = Field(..., description="Тикер валютной пары")
+    ticker: Literal[settings.TICKERS] = Field(..., description='Тикер валютной пары')
 
 TickerDep = Annotated[TickerQuery, Depends(TickerQuery)]
 
@@ -27,7 +27,7 @@ TickerPaginationDep = Annotated[TickerPagination, Depends(TickerPagination)]
 
 
 class TickerDatePagination(TickerPagination):
-    from_timestamp: int = Field(..., description="Unix timestamp начала периода")
-    to_timestamp: int = Field(..., description="Unix timestamp конца периода")
+    from_timestamp: int = Field(..., description='Unix timestamp начала периода')
+    to_timestamp: int = Field(..., description='Unix timestamp конца периода')
 
 TickerDatePaginationDep = Annotated[TickerDatePagination, Depends(TickerDatePagination)]
