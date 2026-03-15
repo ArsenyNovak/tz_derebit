@@ -3,8 +3,8 @@ from sqlalchemy import select, func
 
 from app.database import SessionDep
 from app.models import PriceRecord
-from app.scheme import PriceListResponse, PriceResponse, TickerPaginationDep, \
-    TickerDatePaginationDep, TickerDep
+from app.scheme.price_record import PriceListResponse, PriceResponse
+from app.scheme.utils import TickerPaginationDep, TickerDatePaginationDep, TickerDep
 
 router = APIRouter(prefix='/prices', tags=['Работа с ценой'])
 

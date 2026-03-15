@@ -1,0 +1,22 @@
+from typing import List
+
+from pydantic import BaseModel
+
+
+class PriceResponse(BaseModel):
+    price: float
+    timestamp: int
+
+    class Config:
+        from_attributes = True
+
+
+class PriceListResponse(BaseModel):
+    ticker: str
+    records: List[PriceResponse]
+    total: int
+
+
+class PriceCreate(BaseModel):
+    ticker: str
+    price: float

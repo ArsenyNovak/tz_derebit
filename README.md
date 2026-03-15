@@ -1,3 +1,12 @@
+## Design decisions
+---
+| Решение | Обоснование                                                                                                    |
+|:--------|:---------------------------------------------------------------------------------------------------------------|
+| httpx   | Выбрана вместо aiohttp так как может работать в синхронном режиме. Celery синхронная библиотека.               |
+| celery  | Было обязательным условием. Возможно рассмотрение пакета Taskiq для работы всего кода в асинхронном режиме     |
+| docker  | Разделение на 5 контейнеров, вместо 2-ух. Для удобство масштабирования и соблюдения микросервисной архитектуры |
+
+
 ## Local setup
 ---
 1. Run command:  
@@ -21,5 +30,5 @@
     ````
 3. Run command:  
 `docker compose -f docker-compose.app.yml up -d`  
-`docker compose exec derebit_fastapi uv run alembic upgrade head`
-`docker compose -f docker-compose.celery.yml up -d`
+`docker exec derebit_fastapi uv run alembic upgrade head`  
+`docker compose -f docker-compose.celery.yml up -d`  

@@ -1,4 +1,4 @@
-from typing import List, Literal, Annotated
+from typing import Literal, Annotated
 
 from fastapi import Depends
 from pydantic import BaseModel, Field
@@ -31,22 +31,3 @@ class TickerDatePagination(TickerPagination):
     to_timestamp: int = Field(..., description="Unix timestamp конца периода")
 
 TickerDatePaginationDep = Annotated[TickerDatePagination, Depends(TickerDatePagination)]
-
-
-class PriceResponse(BaseModel):
-    price: float
-    timestamp: int
-
-    class Config:
-        from_attributes = True
-
-
-class PriceListResponse(BaseModel):
-    ticker: str
-    records: List[PriceResponse]
-    total: int
-
-
-class PriceCreate(BaseModel):
-    ticker: str
-    price: float

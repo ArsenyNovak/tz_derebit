@@ -52,7 +52,12 @@ class DeribitHTTPXClient:
 client = DeribitHTTPXClient()
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=2,
+             autoretry_for=(httpx.TimeoutException,),
+             retry_backoff=True,
+             retry_backoff_max=60,
+             retry_jitter=True,
+             default_retry_delay=10)  # Начальная задержка 10с
 def fetch_deribit_prices(self):
     """Celery задача с синхронным httpx"""
     try:
@@ -64,7 +69,7 @@ def fetch_deribit_prices(self):
                 logger.info(f"✅ {ticker}: ${price_data['price']:.2f}")
             except httpx.TimeoutException:
                 logger.warning(f"⏰ Timeout {ticker}, retry...")
-                raise self.retry(countdown=60)
+                raise
             except httpx.HTTPStatusError as e:
                 logger.error(f"❌ HTTP {e.response.status_code} {ticker}")
             except Exception as e:
